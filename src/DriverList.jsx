@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
-import database from "./FirebaseConfig"; // Import the Realtime Database instance
+import database from "./FirebaseConfig";
 
 const DriverList = () => {
   const [drivers, setDrivers] = useState([]);
 
   useEffect(() => {
-    const dbRef = ref(database, "drivers"); // Reference to the "drivers" node in Realtime Database
+    const dbRef = ref(database, "drivers");
 
-    // Listen for changes to the "drivers" data
     const unsubscribe = onValue(dbRef, (snapshot) => {
-      const data = snapshot.val(); // Get the snapshot data
+      const data = snapshot.val();
       if (data) {
-        // Convert the object returned by Realtime Database to an array
         const driverData = Object.keys(data).map((key) => ({
           id: key,
           ...data[key],
         }));
         setDrivers(driverData);
       } else {
-        setDrivers([]); // Set an empty array if no data exists
+        setDrivers([]);
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener on component unmount
+    return () => unsubscribe();
   }, []);
 
   return (

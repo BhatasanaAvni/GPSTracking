@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getDatabase, ref, push } from "firebase/database";
-import database from "./FirebaseConfig"; // Import your configured database
+import database from "./FirebaseConfig";
 
 const AddDriver = () => {
   const [formData, setFormData] = useState({
@@ -9,51 +9,38 @@ const AddDriver = () => {
     carModel: "",
     licenseNumber: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Prevent multiple submissions
     if (isSubmitting) return;
 
-    setIsSubmitting(true); // Set the submitting state to true
+    setIsSubmitting(true);
     try {
-      const dbRef = ref(database, "drivers"); // Reference to the "drivers" node
-      await push(dbRef, formData); // Add data to Firebase Realtime Database
+      const dbRef = ref(database, "drivers");
+      await push(dbRef, formData);
       alert("Driver added successfully!");
       setFormData({ name: "", mobile: "", carModel: "", licenseNumber: "" });
     } catch (error) {
       console.error("Error adding driver: ", error);
       alert("Failed to add driver. Please try again.");
     } finally {
-      setIsSubmitting(false); // Reset the submitting state
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        className="bg-white shadow-md rounded-lg p-6 w-full max-w-md"
-        onSubmit={handleSubmit}
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Add Driver
-        </h2>
+      <form className="bg-white shadow-md rounded-lg p-6 w-full max-w-md" onSubmit={handleSubmit}>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Add Driver</h2>
         {["name", "mobile", "carModel", "licenseNumber"].map((field) => (
           <div className="mb-4" key={field}>
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor={field}
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor={field}>
               {field.charAt(0).toUpperCase() + field.slice(1)}
             </label>
             <input
